@@ -7,7 +7,7 @@
 #include "string.h"
 
 #define DB_BUFFER_SIZE 200
-#define DB_ENTRY_TEMPLATE "{ \"date_time\": \"%02d-%02d-20%02d %02d:%02d:%02d\", \"latitude\": \"%+6.2f\", \"longitude\": \"%+6.2f\", "\
+#define DB_ENTRY_TEMPLATE "{ \"date_time\": \"%02d-%02d-20%02d %02d:%02d:%02d\", \"latitude\": %.2f, \"longitude\": %.2f, "\
 	                      "\"temperature\": %.1f, \"pressure\": %.0f, \"altitude\": %.0f, \"humidity\": %.2f }\r\n"
 
 typedef struct db_entry {

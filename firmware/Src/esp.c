@@ -47,6 +47,8 @@ uint8_t esp_send_cmd(UART_HandleTypeDef* uart, char* command)
 			&& strcmp(response, "ERROR") != 0)
 		esp_read_line(uart, response, 30);
 
+	osDelay(1000);
+
 	if (strcmp(response, "ERROR") == 0) return 0;
 	else return 1;
 }
@@ -62,7 +64,7 @@ void esp_send_data(UART_HandleTypeDef* uart, char* content)
 	char response[30];
 	response[0] = '\0';
 
-	__HAL_UART_FLUSH_DRREGISTER(&huart1);
+	//__HAL_UART_FLUSH_DRREGISTER(&huart1);
 
 	while (strcmp(response, "OK") != 0
 			&& strcmp(response, "SEND OK") != 0

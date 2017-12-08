@@ -51,6 +51,7 @@ void StartSensorsTask(void const* argument)
 
 	bme_state bme = bme_init(BME_I2C_INST);
 	bme_setup(&bme);
+	osDelay(10*1000);
 
 	for(;;)
 	{
@@ -124,7 +125,7 @@ void StartWifiTask(void const* argument)
 				sprintf(conn_str, "AT+CWJAP_CUR=\"%s\",\"%s\"", WIFI_NAME, WIFI_PASS);
 
 				reconnect:
-				if(!esp_send_cmd(ESP_UART_INST, "AT+CWJAP_CUR=\"BRAMA\",\"zaq1@WSX\"")) goto reconnect;
+				if(!esp_send_cmd(ESP_UART_INST, conn_str)) goto reconnect;
 				if(!esp_send_cmd(ESP_UART_INST, "AT+CIPMUX=0")) goto reconnect;
 
 				for(uint16_t i = 0; i < db.next_id || (db.full == 1 && i < DB_BUFFER_SIZE); i++)
@@ -133,23 +134,28 @@ void StartWifiTask(void const* argument)
 
 					if(!esp_send_cmd(ESP_UART_INST, "AT+CIPSTART=\"TCP\",\"192.168.12.1\",8080")) goto reconnect;
 
+					char content_length_str[100];
+					sprintf(content_length_str, "Content-Length: %d\r\n", strlen(output)+strlen("json_data="));
+
 					esp_send_data(ESP_UART_INST, "POST /recv_data HTTP/1.1\r\n");
-					esp_send_data(ESP_UART_INST, "Host: 192.168.1.20:8080\r\n");
+					esp_send_data(ESP_UART_INST, "Host: 192.168.12.1:8080\r\n");
 					esp_send_data(ESP_UART_INST, "Connection: close\r\n");
 					esp_send_data(ESP_UART_INST, "Content-Type: application/x-www-form-urlencoded\r\n");
-					esp_send_data(ESP_UART_INST, "Content-Length: 166\r\n");
+					esp_send_data(ESP_UART_INST, content_length_str);
 					esp_send_data(ESP_UART_INST, "\r\n");
 					esp_send_data(ESP_UART_INST, "json_data=");
 					esp_send_data(ESP_UART_INST, output);
 					esp_send_data(ESP_UART_INST, "\r\n");
 
+					osDelay(2000);
 					esp_send_cmd(ESP_UART_INST, "AT+CIPCLOSE");
 
 					//db_read_entry_as_json(&db, i, &output);
 					//print_dbg(&output);
 				}
 
-				print_dbg("\r\n");
+				//print_dbg("\r\n");
+
 				db_reset_counters(&db);
 				db_unlock_for_adding(&db);
 			}
