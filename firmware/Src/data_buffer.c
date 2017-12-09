@@ -46,9 +46,14 @@ void db_unlock_for_adding(db_state* state)
 void db_read_entry_as_json(db_state* state, uint16_t position, char* output)
 {
 	db_entry entry = state->data_array[position];
-	sprintf(output, DB_ENTRY_TEMPLATE, entry.date_day, entry.date_mounth, entry.date_year,
-			entry.time_hour, entry.time_min, entry.time_sec, entry.latitude, entry.longitude,
-			entry.temperature, entry.pressure, entry.altitude, entry.humidity);
+	if(entry.date_mounth == 0 || entry.date_day == 0)
+			sprintf(output, DB_ENTRY_TEMPLATE, entry.date_year, 1, 1,
+					entry.time_hour, entry.time_min, entry.time_sec, entry.latitude, entry.longitude,
+					entry.temperature, entry.pressure, entry.altitude, entry.humidity);
+	else
+		sprintf(output, DB_ENTRY_TEMPLATE, entry.date_year, entry.date_mounth, entry.date_day,
+				entry.time_hour, entry.time_min, entry.time_sec, entry.latitude, entry.longitude,
+				entry.temperature, entry.pressure, entry.altitude, entry.humidity);
 }
 
 void db_reset_counters(db_state* state)

@@ -108,6 +108,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* uart)
 
 void StartWifiTask(void const* argument)
 {
+	osDelay(2*1000);
+
 	char output[300];
 	output[0] = "\0";
 
