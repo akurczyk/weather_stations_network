@@ -1,3 +1,3 @@
 # weather_stations_network
 
-My graduation project.
+My BSc graduation project.
